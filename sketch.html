@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			body {
+				background-color: #ffffff;
+				margin: 0;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+
+		<script src="js/three.min.js"></script>
+		<script src="js/Detector.js"></script>
+		<script>
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var camera, scene, renderer;
+			var geometry, material, mesh;
+
+			function setup() {
+
+				var W = window.innerWidth, H = window.innerHeight;
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( W, H );
+				document.body.appendChild( renderer.domElement );
+
+				camera = new THREE.PerspectiveCamera( 50, W/H, 1, 10000 );
+				camera.position.z = 500;
+
+				scene = new THREE.Scene();
+
+
+				map = THREE.ImageUtils.loadTexture('../texturez/rock_tile.jpg');
+				geometry = new THREE.TorusKnotGeometry(173.55, 26.88, 36, 53, 15, 6.92, 4.64);
+				material = new THREE.MeshNormalMaterial({shading: THREE.FlatShading, side: THREE.DoubleSide, wireframe: true, wireframeLinewidth: 8, transparent: true, opacity: 1});
+				mesh = new THREE.Mesh(geometry, material);
+				map.wrapS = map.wrapT = THREE.RepeatWrapping;
+				map.repeat.set( 1, 1 );
+				mesh.rotation.y = 5.12;
+				mesh.rotation.z = 2.38;
+				scene.add(mesh);
+
+				bg = document.body.style;
+				bg.background = '#293a48';
+
+				ambientLight = new THREE.AmbientLight( 0x370c0c );
+				scene.add( ambientLight );
+
+				hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, 0);
+				scene.add( hemisphereLight );
+
+				directionalLight = new THREE.DirectionalLight(0xffffff, 0.32);
+				directionalLight.position.set( 0, 1, 0 );
+				directionalLight.castShadow = true;
+				scene.add( directionalLight );
+
+				spotLight1 = new THREE.SpotLight( 0xffffff, 0.33 );
+				spotLight1.position.set( 100, 1000, 100 );
+				spotLight1.castShadow = true;
+				spotLight1.shadowDarkness = 0.2;
+				scene.add( spotLight1 );
+
+				spotLight2 = new THREE.SpotLight( 0xffffff, 2.1 );
+				spotLight2.position.set( -117.77, 852.67, 146.89 );
+				spotLight2.castShadow = true;
+				spotLight2.shadowDarkness = 0.04;
+				scene.add( spotLight2 );
+
+			}
+
+			function draw() {
+
+				requestAnimationFrame( draw );
+
+				mesh.rotation.x = Date.now() * 0.0005;
+				mesh.rotation.y = Date.now() * 0.0002;
+				mesh.rotation.z = Date.now() * 0.001;
+
+				renderer.render( scene, camera );
+
+			}
+
+			setup();
+			draw();
+
+		</script>
+
+	</body>
+</html>
